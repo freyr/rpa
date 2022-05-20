@@ -1,0 +1,24 @@
+{
+  "name": "freyr/rpa",
+  "description": "Robotic Process Automation",
+  "minimum-stability": "stable",
+  "prefer-stable": true,
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Michal Giergielewicz",
+      "email": "michal@giergielewicz.pl"
+    }
+  ],
+  "require": {
+    "php": ">= 8.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Freyr\\RPA\\": "src/"
+    }
+  }
+}
