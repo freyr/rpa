@@ -1,0 +1,8 @@
+services:
+  unit:
+    build:
+      context: .
+    volumes:
+      - ./:/app
+      - ${COMPOSER_HOME}:/.composer:consistent
+    entrypoint: ["vendor/bin/phpunit"]

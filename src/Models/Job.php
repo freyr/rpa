@@ -10,6 +10,7 @@ class Job implements JsonSerializable
     public function __construct(
         private int $id,
         private string $name,
+        private string $type,
         private int $ownerId,
         private string $definition,
         private string $parameters,
@@ -18,6 +19,22 @@ class Job implements JsonSerializable
         private string $status
     )
     {
+    }
+
+    /**
+     * @return string
+     */
+    public function getType(): string
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param string $type
+     */
+    public function setType(string $type): void
+    {
+        $this->type = $type;
     }
 
     /**
@@ -146,6 +163,7 @@ class Job implements JsonSerializable
         'id' => "int",
         'owner' => "int",
         'name' => "string",
+        'type' => 'string',
         'definition' => "string",
         'parameters' => "string",
         'environmentId' => 'int',
@@ -158,6 +176,7 @@ class Job implements JsonSerializable
             'id' => $this->id,
             'owner' => $this->ownerId,
             'name' => $this->name,
+            'type' => $this->type,
             'definition' => $this->definition,
             'parameters' => $this->parameters,
             'environmentId' => $this->environmentId,

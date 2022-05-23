@@ -1,5 +1,7 @@
 *
 !src
+!tests
 !composer.lock
 !composer.json
 !.env.template
+!phpunit.xml

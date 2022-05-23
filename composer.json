@@ -20,5 +20,10 @@
     "psr-4": {
       "Freyr\\RPA\\": "src/"
     }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests/"
+    }
   }
 }
