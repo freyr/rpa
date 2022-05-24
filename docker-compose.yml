@@ -1,0 +1,14 @@
+services:
+  unit:
+    build:
+      context: .
+    volumes:
+      - ./:/app
+      - ${COMPOSER_HOME}:/.composer:consistent
+    entrypoint: ["vendor/bin/phpunit"]
+
+  redis:
+    image: docker.io/bitnami/redis:6.2.6
+    hostname: redis-rpa
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
