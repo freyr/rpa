@@ -2,8 +2,8 @@
 
 namespace Tests\Scheduling;
 
-use Freyr\RPA\Models\JobsRepository;
-use Freyr\RPA\UI\SchedulingController;
+use Freyr\RPA\Models\Job;
+use Freyr\RPA\Models\JobRepository;
 use PHPUnit\Framework\TestCase;
 
 class ScheduleProcessTest extends TestCase
@@ -13,9 +13,22 @@ class ScheduleProcessTest extends TestCase
      */
     public function shouldScheduleProcess()
     {
-        $repository = new JobsRepository();
-        $controller = new SchedulingController($repository);
-        $jobs = $controller->scheduleProcess(1,2,3,4,5,);
-        self::assertEquals(5, count(json_decode($jobs)));
+        $job = Job::create('screen');
+        $job->schedule();
+        $job->execute();
+        $job->finalize('error');
+        $job->execute();
+        $job->finalize('success');
+
+        $repository = new JobRepository();
+        $repository->store($job);
+
+        $job2 = $repository->getById($job->getId());
+        $jobRef = new \ReflectionObject($job2);
+        $runNumberProperty = $jobRef->getProperty('runNumber');
+        $runNumberProperty->setAccessible(true);
+
+        $actualRunNumber = $runNumberProperty->getValue($job2);
+        self::assertEquals(2, $actualRunNumber);
     }
 }

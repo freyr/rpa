@@ -4,184 +4,91 @@ namespace Freyr\RPA\Models;
 
 use JetBrains\PhpStorm\ArrayShape;
 use JsonSerializable;
+use Ramsey\Uuid\Uuid;
 
 class Job implements JsonSerializable
 {
     public function __construct(
-        private int $id,
-        private string $name,
+        private string $id,
         private string $type,
-        private int $ownerId,
-        private string $definition,
-        private string $parameters,
-        private int $environmentId,
-        private int $destinationId,
-        private string $status
+        private string $status,
+        private int $runNumber,
     )
     {
     }
 
-    /**
-     * @return string
-     */
-    public function getType(): string
+    public static function create(string $type): Job
     {
-        return $this->type;
+        return new self(
+            Uuid::uuid4()->toString(),
+            $type,
+            Status::READY_FOR_EXECUTION,
+            1
+        );
     }
 
-    /**
-     * @param string $type
-     */
-    public function setType(string $type): void
+    public static function fromJson(string $json): Job
     {
-        $this->type = $type;
+        $data = json_decode($json, true);
+        return new self(
+            $data['id'],
+            $data['type'],
+            $data['status'],
+            $data['run_number']
+        );
     }
 
-    /**
-     * @return int
-     */
-    public function getDestinationId(): int
+    public function schedule(): void
     {
-        return $this->destinationId;
+        if ($this->status === Status::READY_FOR_EXECUTION)
+        {
+            $this->status = Status::SCHEDULED;
+        }
     }
 
-    /**
-     * @param int $destinationId
-     */
-    public function setDestinationId(int $destinationId): void
+    public function execute(): void
     {
-        $this->destinationId = $destinationId;
+        if ($this->status === Status::SCHEDULED)
+        {
+            $this->status = Status::SENT_TO_RUNNER;
+        }
     }
 
-    /**
-     * @return int
-     */
-    public function getId(): int
+    public function finalize(string $report): void
+    {
+        if ($this->status === Status::SENT_TO_RUNNER)
+        {
+            if ($report === 'success') {
+                $this->status = Status::FINISH_WITH_SUCCESS;
+            } else {
+                if ($this->runNumber < 2) {
+                    $this->status = Status::SCHEDULED;
+                    $this->runNumber++;
+                } else {
+                    $this->status = Status::FINISH_WITH_FAILURE;
+                }
+            }
+        }
+    }
+
+    public function getId(): string
     {
         return $this->id;
     }
 
-    /**
-     * @param int $id
-     */
-    public function setId(int $id): void
-    {
-        $this->id = $id;
-    }
-
-    /**
-     * @return string
-     */
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    /**
-     * @param string $name
-     */
-    public function setName(string $name): void
-    {
-        $this->name = $name;
-    }
-
-    /**
-     * @return int
-     */
-    public function getOwnerId(): int
-    {
-        return $this->ownerId;
-    }
-
-    /**
-     * @param int $ownerId
-     */
-    public function setOwnerId(int $ownerId): void
-    {
-        $this->ownerId = $ownerId;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDefinition(): string
-    {
-        return $this->definition;
-    }
-
-    /**
-     * @param string $definition
-     */
-    public function setDefinition(string $definition): void
-    {
-        $this->definition = $definition;
-    }
-
-    /**
-     * @return string
-     */
-    public function getParameters(): string
-    {
-        return $this->parameters;
-    }
-
-    /**
-     * @param string $parameters
-     */
-    public function setParameters(string $parameters): void
-    {
-        $this->parameters = $parameters;
-    }
-
-    public function getStatus(): string
-    {
-        return $this->status;
-    }
-
-    public function setStatus(string $status)
-    {
-        $this->status = $status;
-    }
-
-    /**
-     * @return int
-     */
-    public function getEnvironmentId(): int
-    {
-        return $this->environmentId;
-    }
-
-    /**
-     * @param int $environmentId
-     */
-    public function setEnvironmentId(int $environmentId): void
-    {
-        $this->environmentId = $environmentId;
-    }
-
     #[ArrayShape([
-        'id' => "int",
-        'owner' => "int",
-        'name' => "string",
+        'id' => 'int',
         'type' => 'string',
-        'definition' => "string",
-        'parameters' => "string",
-        'environmentId' => 'int',
-        'destinationId' => 'int',
-        'status' => "string"
+        'status' => 'string',
+        'run_number' => 'int'
     ])]
     public function jsonSerialize(): array
     {
         return [
             'id' => $this->id,
-            'owner' => $this->ownerId,
-            'name' => $this->name,
             'type' => $this->type,
-            'definition' => $this->definition,
-            'parameters' => $this->parameters,
-            'environmentId' => $this->environmentId,
-            'destinationId' => $this->destinationId,
-            'status' => $this->status
+            'status' => $this->status,
+            'run_number' => $this->runNumber
         ];
     }
 }
