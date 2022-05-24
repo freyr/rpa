@@ -12,3 +12,19 @@ services:
     hostname: redis-rpa
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
+
+  db:
+    image: percona:ps-5.7
+    hostname: rpa-db
+    platform: linux/amd64
+    working_dir: /data/www
+    environment:
+      - MYSQL_ROOT_HOST=%
+      - MYSQL_ROOT_PASSWORD=rpa
+      - MYSQL_DATABASE=rpa
+      - MYSQL_USER=rpa
+      - MYSQL_PASSWORD=rpa
+    volumes:
+      - ./:/app
+      - ./database/mysql.cnf:/etc/my.cnf.d/mysql-rpa.cnf
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/schema.sql

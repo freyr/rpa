@@ -8,6 +8,8 @@ RUN apt-get update && apt-get install -y \
     redis \
     && docker-php-ext-install \
     zip \
+    pdo \
+    pdo_mysql \
     && docker-php-ext-enable \
     redis \
     && apt purge -y $PHPIZE_DEPS \

@@ -1,0 +1,31 @@
+[client]
+port = 3306
+default-character-set = utf8mb4
+[mysqld]
+character-set-server=utf8mb4
+collation-server=utf8mb4_general_ci
+init_connect = "SET NAMES utf8mb4"
+innodb-large-prefix=on
+innodb-file-format=BARRACUDA
+innodb-log-buffer-size=64M
+innodb-buffer-pool-size=256M
+innodb-buffer-pool-instances=1
+innodb-flush-method=O_DIRECT
+innodb-flush-log-at-trx-commit=0
+tmp-table-size=64M
+max-allowed-packet=32M
+key-buffer-size=128M
+bulk-insert-buffer-size=64M
+innodb-flush-neighbors=0
+innodb-doublewrite=OFF
+performance_schema=off
+skip-name-resolve
+secure-auth=on
+sql-mode=strict_all_tables
+transaction-isolation=READ-COMMITTED
+server_id=1
+auto-increment-offset=1
+auto-increment-increment=1
+wait_timeout=30
+[mysql]
+default-character-set = utf8mb4

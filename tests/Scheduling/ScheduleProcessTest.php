@@ -3,7 +3,9 @@
 namespace Tests\Scheduling;
 
 use Freyr\RPA\Models\Job;
-use Freyr\RPA\Models\JobRepository;
+use Freyr\RPA\Repository\DbFactory;
+use Freyr\RPA\Repository\JobRepository;
+use Freyr\RPA\Service\JobService;
 use PHPUnit\Framework\TestCase;
 
 class ScheduleProcessTest extends TestCase
@@ -20,15 +22,17 @@ class ScheduleProcessTest extends TestCase
         $job->execute();
         $job->finalize('success');
 
-        $repository = new JobRepository();
-        $repository->store($job);
+        $repository = new JobRepository(DbFactory::create());
+        $service = new JobService($repository);
+        $jobId = $service->createJob('screen');
 
-        $job2 = $repository->getById($job->getId());
-        $jobRef = new \ReflectionObject($job2);
-        $runNumberProperty = $jobRef->getProperty('runNumber');
-        $runNumberProperty->setAccessible(true);
+        $service->scheduleJob($jobId);
+        $service->executeJob($jobId);
+        $service->finalizeJob($jobId, 'error');
+        $service->executeJob($jobId);
+        $service->finalizeJob($jobId, 'success');
+        $runNumber = $service->getRunNumber($jobId);
 
-        $actualRunNumber = $runNumberProperty->getValue($job2);
-        self::assertEquals(2, $actualRunNumber);
+        self::assertEquals(2, $runNumber);
     }
 }
