@@ -4,7 +4,6 @@ services:
       context: .
     volumes:
       - ./:/app
-      - ${COMPOSER_HOME}:/.composer:consistent
     entrypoint: ["vendor/bin/phpunit"]
 
   redis:
