@@ -29,5 +29,3 @@ FROM php-base as php-runtime
 USER www-data
 WORKDIR /app
 COPY --chown=www-data:www-data --from=php-build /build .
-
-CMD ["vendor/bin/phpunit"]

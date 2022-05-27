@@ -1,10 +1,18 @@
 services:
+  build:
+    build:
+      context: .
+    profiles:
+      - build
+    volumes:
+      - ./:/app
+    entrypoint: [ "composer", "install" ]
+
   unit:
     build:
       context: .
     volumes:
       - ./:/app
-      - ${COMPOSER_HOME}:/.composer:consistent
     entrypoint: ["vendor/bin/phpunit"]
 
   redis:
