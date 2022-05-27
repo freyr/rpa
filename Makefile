@@ -2,7 +2,7 @@ create:
 	docker compose pull
 	docker compose up -d
 
-start: destroy
+start:
 	docker compose up -d
 destroy:
 	docker compose down -v
