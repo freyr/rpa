@@ -1,5 +1,11 @@
 # Bridge Tournament Participant Submission
 
+## Jak uruchomić
+Makefile zawiera wszystkie potrzebne komendy pozwalające na uruchomienie i przetestowanie aplikacji.
+
+Komunikacja z aplikacją odbywa się poprzez CLI - w bin/console znajduje się lista commandów
+`make bash` pozwala na połączenie się z CLI i wykonanie poloeceń (`php bin/console` daje help'a) 
+
 ## Podstawowe pojęcia
 ### Tournament
     Pojedyncze wydrzenie w którym może wziąć udział grupa Participantów o ile złożą oni poprawne Submission
