@@ -1,0 +1,16 @@
+#!/usr/bin/env php
+<?php
+declare(strict_types=1);
+
+use Freyr\RPA\Cli\CreateNewTournament;
+use Freyr\RPA\Cli\ListAllTournaments;
+use Freyr\RPA\Cli\RegisterSubmissionToTheTournament;
+use Symfony\Component\Console\Application;
+
+require __DIR__.'/../vendor/autoload.php';
+
+$application = new Application('Brigde', 'v0.0.1');
+$application->add(new CreateNewTournament());
+$application->add(new RegisterSubmissionToTheTournament());
+$application->add(new ListAllTournaments());
+$application->run();
