@@ -17,7 +17,7 @@ install:
 	docker compose run --rm php composer install
 
 update:
-	docker compose run --rm php composer install
+	docker compose run --rm php composer update
 
 bash:
 	docker compose run -it --rm php bash
