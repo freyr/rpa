@@ -1,6 +1,8 @@
 create:
 	docker compose pull
+	$(shell cp -n .env.template .env)
 	docker compose up -d
+
 
 destroy:
 	docker compose down
