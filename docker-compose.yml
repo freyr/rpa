@@ -1,0 +1,12 @@
+services:
+  php:
+    build:
+      context: .
+    volumes:
+      - ./:/app
+    profiles:
+      - run
+
+  redis:
+    image: redis
+    hostname: redis-rpa
