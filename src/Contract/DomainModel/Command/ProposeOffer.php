@@ -2,6 +2,7 @@
 
 namespace Freyr\RPA\Contract\DomainModel\Command;
 
+use Carbon\Carbon;
 use Freyr\RPA\Contract\DomainModel\OfferId;
 
 class ProposeOffer
@@ -10,5 +11,15 @@ class ProposeOffer
     public function getId(): OfferId
     {
         return OfferId::createNew('');
+    }
+
+    public function getApplicationCreatedTime(): Carbon
+    {
+        return new Carbon('now');
+    }
+
+    public function getAmount(): int
+    {
+        return 100;
     }
 }
