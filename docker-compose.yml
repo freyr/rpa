@@ -8,5 +8,5 @@ services:
       - run
 
   redis:
-    image: redis
+    image: redis:7.0.2
     hostname: redis-rpa
