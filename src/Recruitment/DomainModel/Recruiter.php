@@ -4,11 +4,7 @@ declare(strict_types=1);
 
 namespace Freyr\RPA\Recruitment\DomainModel;
 
-use Freyr\RPA\Recruitment\DomainModel\Command\AssignCandidateToRecruiterCommand;
-use Freyr\RPA\Shared\AggregateChanged;
-use Freyr\RPA\Shared\AggregateRoot;
-
-class Recruiter extends AggregateRoot
+class Recruiter
 {
 
     private int $numberOfAssignedCVs;
@@ -33,8 +29,8 @@ class Recruiter extends AggregateRoot
         return !$this->isOnHoliday && $this->isEmployed;
     }
 
-    public function assign(AssignCandidateToRecruiterCommand $command): void
+    public function assign()
     {
-        $this->recordThat(new CandidateWasAssignedToRecuiter());
+        return new CVWasAssignedToRecuiter();
     }
 }

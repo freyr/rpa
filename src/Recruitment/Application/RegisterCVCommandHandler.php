@@ -3,7 +3,7 @@
 namespace Freyr\RPA\Recruitment\Application;
 
 use Freyr\RPA\Recruitment\DomainModel\Candidate;
-use Freyr\RPA\Recruitment\DomainModel\RecruiterRepository;
+use Freyr\RPA\Recruitment\DomainModel\AggregateRepository;
 use Freyr\RPA\Recruitment\DomainModel\Command\RegisterCVCommand;
 use Freyr\RPA\Recruitment\DomainModel\Event\NewCandidateWasCreated;
 use Ramsey\Uuid\Uuid;
@@ -11,7 +11,7 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class RegisterCVCommandHandler
 {
-    public function __construct(private RecruiterRepository $repository, private EventDispatcher $dispatcher )
+    public function __construct(private AggregateRepository $repository, private EventDispatcher $dispatcher )
     {
     }
 

@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Freyr\RPA\Recruitment\Application;
 
 use Freyr\RPA\Recruitment\ReadModel\DefaultView;

@@ -5,9 +5,12 @@ declare(strict_types=1);
 namespace Freyr\RPA\Recruitment\DomainModel;
 
 use Freyr\RPA\Recruitment\DomainModel\Command\AssignCandidateToRecruiterCommand;
-use Freyr\RPA\Recruitment\DomainModel\Event\AggregateEvent;
 use Freyr\RPA\Shared\AggregateRoot;
 
+/**
+ * Domain service is used cause this behaviour cannot be put inside of Recruitment Aggregate
+ * nor in the Candidate Aggregate. Additionally, process could be modelled as stateless function
+ */
 class RecruitmentProcessDomainService extends AggregateRoot
 {
     /** @var Recruiter[] */
