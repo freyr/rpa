@@ -22,4 +22,12 @@ class ProposeOffer
     {
         return 100;
     }
+
+    public function getAge(): int
+    {
+    }
+
+    public function getPeriod(): int
+    {
+    }
 }
