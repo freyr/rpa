@@ -1,4 +1,4 @@
-FROM php:8.0.18 as php-base
+FROM php:8.1.8 as php-base
 WORKDIR /build
 RUN apt-get update && apt-get install -y \
     libzip-dev \
