@@ -5,6 +5,7 @@ namespace Tests\Basket;
 use Freyr\RPA\Basket\Application\AddProductToBasketCommandHandler;
 use Freyr\RPA\Basket\Application\CreateBasketCommandHandler;
 use Freyr\RPA\Basket\Application\RemoveProductFromBasketCommandHandler;
+use Freyr\RPA\Basket\DomainModel\Basket;
 use Freyr\RPA\Basket\DomainModel\Commands\AddProductToBasket;
 use Freyr\RPA\Basket\DomainModel\Commands\CreateBasket;
 use Freyr\RPA\Basket\DomainModel\Commands\RemoveProductFromBasket;
@@ -39,8 +40,6 @@ class BasketTest extends TestCase
 //            1,
 //        );
 //        $handler($command);
-
-
 
         $handler = new RemoveProductFromBasketCommandHandler($repository);
         $command = new RemoveProductFromBasket(

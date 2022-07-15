@@ -10,6 +10,10 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 class CurrentBasketViewListener implements EventSubscriberInterface
 {
 
+    public function __construct(private CurrentBaskeetRedisRepository $repository)
+    {
+    }
+
     public static function getSubscribedEvents()
     {
         return [
@@ -21,11 +25,11 @@ class CurrentBasketViewListener implements EventSubscriberInterface
 
     public function onBasketWasCreated($event)
     {
-
+        $this->repository->addNewBasket();
     }
 
     public function onProductWasAdded($event)
     {
-
+        $this->repository->updateBasketWithProduct();
     }
 }

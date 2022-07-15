@@ -45,6 +45,11 @@ class BasketRedisRepository implements BasketRepository
             $payload = json_encode($event->payload());
             $id = $event->field('_uuid');
             $this->redis->rPush($id, $payload);
+        }
+
+        //commit
+
+        foreach ($events as $event) {
             $this->dispatcher->dispatch($event);
         }
     }
