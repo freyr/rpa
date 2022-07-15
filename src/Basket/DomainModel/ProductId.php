@@ -17,4 +17,11 @@ class ProductId
     public function __construct(readonly public UuidInterface $id)
     {
     }
+
+    public function __toString(): string
+    {
+        return $this->id->toString();
+    }
+
+
 }

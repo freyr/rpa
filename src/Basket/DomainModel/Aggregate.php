@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace Freyr\RPA\Basket\DomainModel;
 
 use Freyr\RPA\Basket\DomainModel\Events\ProductWasRemovedFromBasket;
+use Freyr\RPA\Shared\AggregateChanged;
+use Freyr\RPA\Shared\AggregateRoot;
 use Ramsey\Uuid\UuidInterface;
 
-class Aggregate
+class Aggregate extends AggregateRoot
 {
     private UuidInterface $id;
     /** @var string[] */
@@ -15,12 +17,31 @@ class Aggregate
 
     public function removeProduct(ProductId $productId): void
     {
-        $key = $productId->id->toString();
-        if (array_key_exists($key, $this->products)) {
-            unset($this->products[$key]);
-            ProductWasRemovedFromBasket::occur($this->id->toString(), [
-                'x'
-            ]);
+        $productId = (string) $productId;
+        if (array_key_exists($productId, $this->products)) {
+            $this->recordThat(ProductWasRemovedFromBasket::occur($this->id->toString(), [
+                'productId' => $productId
+            ]));
         }
+    }
+
+    public function aggregateId(): string
+    {
+        return (string) $this->id;
+    }
+
+    protected function apply(AggregateChanged $event): void
+    {
+        $class = get_class($event);
+        $handler = match ($class) {
+            ProductWasRemovedFromBasket::class => fn(ProductWasRemovedFromBasket $event) => $this->onProductWasRemovedFromBasket($event)
+        };
+
+        $handler($event);
+    }
+
+    private function onProductWasRemovedFromBasket(ProductWasRemovedFromBasket $event)
+    {
+        unset($this->products[$event->field('productId')]);
     }
 }
