@@ -1,0 +1,22 @@
+services:
+  build:
+    build:
+      context: .
+    profiles:
+      - build
+    volumes:
+      - ./:/app
+    entrypoint: [ "composer", "install" ]
+
+  unit:
+    build:
+      context: .
+    volumes:
+      - ./:/app
+    entrypoint: ["vendor/bin/phpunit"]
+
+  redis:
+    image: docker.io/bitnami/redis:6.2.6
+    hostname: redis-rpa
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes

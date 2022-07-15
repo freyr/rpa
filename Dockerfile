@@ -4,8 +4,12 @@ RUN apt-get update && apt-get install -y \
     libzip-dev \
     unzip \
     vim \
+    && pecl install \
+    redis \
     && docker-php-ext-install \
     zip \
+    && docker-php-ext-enable \
+    redis \
     && apt purge -y $PHPIZE_DEPS \
     && apt autoremove -y --purge \
     && apt clean all
