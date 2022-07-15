@@ -10,10 +10,10 @@ use Freyr\RPA\Basket\DomainModel\Commands\RemoveProductFromBasket;
 use Freyr\RPA\Basket\DomainModel\Events\BasketWasCreated;
 use Freyr\RPA\Basket\DomainModel\Events\ProductWasAddedToBasket;
 use Freyr\RPA\Basket\DomainModel\Events\ProductWasRemovedFromBasket;
+use Freyr\RPA\Basket\DomainModel\ProductStrategy\ProductStrategy;
 use Freyr\RPA\Basket\ReadModel\ProductService;
 use Freyr\RPA\Shared\AggregateChanged;
 use Freyr\RPA\Shared\AggregateRoot;
-use Ramsey\Uuid\UuidInterface;
 
 class Basket extends AggregateRoot
 {
@@ -31,49 +31,52 @@ class Basket extends AggregateRoot
 
     public function removeProductFromBasket(RemoveProductFromBasket $command): void
     {
-        $productId = (string) $command->getProductId();
+        $productId = (string)$command->getProductId();
         if (array_key_exists($productId, $this->products)) {
-            $this->recordThat(ProductWasRemovedFromBasket::occur($this->id, [
-                'productId' => $productId
-            ]));
+            $this->recordThat(
+                ProductWasRemovedFromBasket::occur($this->id, [
+                    'productId' => $productId
+                ])
+            );
         }
     }
 
-    public function addProductToBasket(AddProductToBasket $command, ProductService $productService): void
-    {
+    public function addProductToBasket(
+        AddProductToBasket $command,
+        ProductService $productService,
+        ProductStrategy $strategy
+    ): void {
         $product = $productService->getProduct(new ProductId($command->getProductId()));
         $productId = $command->getProductId()->toString();
 
-        if ($command->getAmount() > 10) {
+        if (!$strategy->isSatisfyBy($product->getCategory(), $command->getAmount(), $product->getPrice())) {
             return;
         }
 
-        if (array_key_exists($productId, $this->products)) {
-            $currentAmount = (int) $this->products[$productId]['amount'];
-            if ($currentAmount + $command->getAmount() > 10) {
-                return;
-            }
-        }
 
-        $this->recordThat(ProductWasAddedToBasket::occur($this->id, [
-            'productId' => $productId,
-            'amount' => $command->getAmount(),
-            'price' => $product->getPrice()
-        ]));
-
+        $this->recordThat(
+            ProductWasAddedToBasket::occur($this->id, [
+                'productId' => $productId,
+                'amount' => $command->getAmount(),
+                'price' => $product->getPrice()
+            ])
+        );
     }
 
     public function aggregateId(): string
     {
-        return (string) $this->id;
+        return (string)$this->id;
     }
 
     protected function apply(AggregateChanged $event): void
     {
         $class = get_class($event);
         $handler = match ($class) {
-            ProductWasRemovedFromBasket::class => fn(ProductWasRemovedFromBasket $event) => $this->onProductWasRemovedFromBasket($event),
-            ProductWasAddedToBasket::class => fn(ProductWasAddedToBasket $event) => $this->onProductWasAddedToBasket($event),
+            ProductWasRemovedFromBasket::class => fn(ProductWasRemovedFromBasket $event
+            ) => $this->onProductWasRemovedFromBasket($event),
+            ProductWasAddedToBasket::class => fn(ProductWasAddedToBasket $event) => $this->onProductWasAddedToBasket(
+                $event
+            ),
             BasketWasCreated::class => fn(BasketWasCreated $event) => $this->onBasketWasCreated($event),
         };
 
@@ -88,10 +91,10 @@ class Basket extends AggregateRoot
     private function onProductWasAddedToBasket(ProductWasAddedToBasket $event): void
     {
         $productId = $event->field('productId');
-        $price = (float) $event->field('price');
-        $amount = (int) $event->field('amount');
+        $price = (float)$event->field('price');
+        $amount = (int)$event->field('amount');
         if (array_key_exists($productId, $this->products)) {
-            $currentAmount = (int) $this->products[$productId]['amount'];
+            $currentAmount = (int)$this->products[$productId]['amount'];
             $this->products[$productId] = ['price' => $price, 'amount' => $currentAmount + $amount];
         } else {
             $this->products[$productId] = ['price' => $price, 'amount' => $amount];
