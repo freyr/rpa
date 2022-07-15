@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Freyr\RPA\Basket\Application;
 
+use Freyr\RPA\Basket\DomainModel\Commands\AddProductToBasket;
 use Freyr\RPA\Basket\DomainModel\Commands\CreateBasket;
 use Freyr\RPA\Basket\DomainModel\ProductId;
 use Freyr\RPA\Basket\Infrastructure\BasketRedisRepository;
@@ -18,7 +19,7 @@ class AddProductToBasketCommandHandler
     {
     }
 
-    public function __invoke(CreateBasket $command)
+    public function __invoke(AddProductToBasket $command)
     {
         // load aggregate
         $aggregate = $this->repository->load($command->getAggregateId()->toString());

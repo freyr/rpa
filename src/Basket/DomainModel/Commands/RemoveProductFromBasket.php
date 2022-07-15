@@ -16,7 +16,7 @@ class RemoveProductFromBasket
     public function __construct(UuidInterface $aggregateId, UuidInterface $productId)
     {
         $this->productId = new ProductId($productId);
-        $this->aggregateId = new BasketId($productId);
+        $this->aggregateId = new BasketId($aggregateId);
     }
 
     public function getProductId(): UuidInterface

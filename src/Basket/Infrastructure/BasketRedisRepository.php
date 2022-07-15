@@ -8,13 +8,14 @@ use Freyr\RPA\Basket\DomainModel\Basket;
 use Freyr\RPA\Basket\DomainModel\BasketRepository;
 use Freyr\RPA\Shared\AggregateChanged;
 use Redis;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class BasketRedisRepository implements BasketRepository
 {
 
     private Redis $redis;
 
-    public function __construct()
+    public function __construct(private EventDispatcher $dispatcher)
     {
         $this->redis = new Redis();
         $this->redis->connect('redis-rpa');
@@ -31,6 +32,7 @@ class BasketRedisRepository implements BasketRepository
             $events[] = $class::fromArray($payload);
 
         }
+
         return Basket::fromStream($events);
     }
 
@@ -43,6 +45,7 @@ class BasketRedisRepository implements BasketRepository
             $payload = json_encode($event->payload());
             $id = $event->field('_uuid');
             $this->redis->rPush($id, $payload);
+            $this->dispatcher->dispatch($event);
         }
     }
 }

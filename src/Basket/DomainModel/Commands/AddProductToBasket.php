@@ -21,7 +21,7 @@ class AddProductToBasket
     )
     {
         $this->productId = new ProductId($productId);
-        $this->aggregateId = new BasketId($productId);
+        $this->aggregateId = new BasketId($aggregateId);
         $this->amount = $amount;
     }
 

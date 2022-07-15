@@ -17,9 +17,9 @@ use Ramsey\Uuid\UuidInterface;
 
 class Basket extends AggregateRoot
 {
-    private UuidInterface $id;
+    private string $id;
     /** @var string[] */
-    private array $products;
+    private array $products = [];
 
 
     public static function create(CreateBasket $command): Basket
@@ -33,7 +33,7 @@ class Basket extends AggregateRoot
     {
         $productId = (string) $command->getProductId();
         if (array_key_exists($productId, $this->products)) {
-            $this->recordThat(ProductWasRemovedFromBasket::occur($this->id->toString(), [
+            $this->recordThat(ProductWasRemovedFromBasket::occur($this->id, [
                 'productId' => $productId
             ]));
         }
@@ -55,7 +55,7 @@ class Basket extends AggregateRoot
             }
         }
 
-        $this->recordThat(ProductWasAddedToBasket::occur($this->id->toString(), [
+        $this->recordThat(ProductWasAddedToBasket::occur($this->id, [
             'productId' => $productId,
             'amount' => $command->getAmount(),
             'price' => $product->getPrice()
