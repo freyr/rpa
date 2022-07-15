@@ -33,10 +33,10 @@ class AggregateRedisRepository
         return Aggregate::fromStream($events);
     }
 
-    public function store(Aggregate $job)
+    public function store(Aggregate $aggregate)
     {
         $eventExtractor = function (): array {return $this->popRecordedEvents();};
-        $events = $eventExtractor->call($job);
+        $events = $eventExtractor->call($aggregate);
         /** @var AggregateChanged $event */
         foreach ($events as $event) {
             $payload = json_encode($event->payload());

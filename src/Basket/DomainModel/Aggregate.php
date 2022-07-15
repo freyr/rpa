@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Freyr\RPA\Basket\DomainModel;
 
+use Freyr\RPA\Basket\DomainModel\Commands\AddProductToBasket;
+use Freyr\RPA\Basket\DomainModel\Commands\RemoveProductFromBasket;
 use Freyr\RPA\Basket\DomainModel\Events\ProductWasRemovedFromBasket;
 use Freyr\RPA\Shared\AggregateChanged;
 use Freyr\RPA\Shared\AggregateRoot;
@@ -15,14 +17,19 @@ class Aggregate extends AggregateRoot
     /** @var string[] */
     private array $products;
 
-    public function removeProduct(ProductId $productId): void
+    public function removeProduct(RemoveProductFromBasket $command): void
     {
-        $productId = (string) $productId;
+        $productId = (string) $command->getProductId();
         if (array_key_exists($productId, $this->products)) {
             $this->recordThat(ProductWasRemovedFromBasket::occur($this->id->toString(), [
                 'productId' => $productId
             ]));
         }
+    }
+
+    public function addProductToBasket(AddProductToBasket $command): void
+    {
+
     }
 
     public function aggregateId(): string
