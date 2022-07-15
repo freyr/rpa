@@ -7,7 +7,7 @@ namespace Freyr\RPA\Basket\DomainModel;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
-class AggregateId
+class BasketId
 {
 
     public static function create()

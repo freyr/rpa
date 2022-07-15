@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace Freyr\RPA\Basket\Infrastructure;
 
-use Freyr\RPA\Basket\DomainModel\Aggregate;
+use Freyr\RPA\Basket\DomainModel\Basket;
+use Freyr\RPA\Basket\DomainModel\BasketRepository;
 use Freyr\RPA\Shared\AggregateChanged;
 use Redis;
 
-class AggregateRedisRepository
+class BasketRedisRepository implements BasketRepository
 {
 
     private Redis $redis;
@@ -19,7 +20,7 @@ class AggregateRedisRepository
         $this->redis->connect('redis-rpa');
     }
 
-    public function load(string $id): Aggregate
+    public function load(string $id): Basket
     {
         $len = $this->redis->lLen($id);
         $data = $this->redis->lRange($id, 0, $len);
@@ -30,10 +31,10 @@ class AggregateRedisRepository
             $events[] = $class::fromArray($payload);
 
         }
-        return Aggregate::fromStream($events);
+        return Basket::fromStream($events);
     }
 
-    public function store(Aggregate $aggregate)
+    public function store(Basket $aggregate): void
     {
         $eventExtractor = function (): array {return $this->popRecordedEvents();};
         $events = $eventExtractor->call($aggregate);

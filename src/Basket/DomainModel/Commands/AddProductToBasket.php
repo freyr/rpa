@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Freyr\RPA\Basket\DomainModel\Commands;
 
-use Freyr\RPA\Basket\DomainModel\AggregateId;
+use Freyr\RPA\Basket\DomainModel\BasketId;
 use Freyr\RPA\Basket\DomainModel\ProductId;
 use Ramsey\Uuid\UuidInterface;
 
@@ -12,7 +12,7 @@ class AddProductToBasket
 {
     private int $amount;
     private ProductId $productId;
-    private AggregateId $aggregateId;
+    private BasketId $aggregateId;
 
     public function __construct(
         UuidInterface $aggregateId,
@@ -21,7 +21,7 @@ class AddProductToBasket
     )
     {
         $this->productId = new ProductId($productId);
-        $this->aggregateId = new AggregateId($productId);
+        $this->aggregateId = new BasketId($productId);
         $this->amount = $amount;
     }
 

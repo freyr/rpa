@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Freyr\RPA\Basket\Application;
 
 use Freyr\RPA\Basket\DomainModel\Commands\RemoveProductFromBasket;
-use Freyr\RPA\Basket\Infrastructure\AggregateRedisRepository;
+use Freyr\RPA\Basket\Infrastructure\BasketRedisRepository;
 
 class RemoveProductFromBasketCommandHandler
 {
-    public function __construct(private AggregateRedisRepository $repository)
+    public function __construct(private BasketRedisRepository $repository)
     {
     }
 
@@ -19,7 +19,7 @@ class RemoveProductFromBasketCommandHandler
         $aggregate = $this->repository->load($command->getAggregateId()->toString());
 
         // modify
-        $aggregate->removeProduct($command);
+        $aggregate->removeProductFromBasket($command);
 
         // persist
         $this->repository->store($aggregate);
