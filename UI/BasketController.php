@@ -16,12 +16,13 @@ class BasketController
     public function createBasket(Request $request, Response $response): Response
     {
         $basketId = Uuid::uuid4();
+
         $repository = new BasketRedisRepository();
         $command = new CreateBasket($basketId);
         $handler = new CreateBasketCommandHandler($repository);
         $handler($command);
 
-        return $response->withStatus(200);
+        return $response->withStatus(200)->withCookie('basketId', $basketId->toString());
     }
 
     public function removeProductFromBasket(Request $request, Response $response): Response

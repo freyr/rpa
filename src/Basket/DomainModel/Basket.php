@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Freyr\RPA\Basket\DomainModel;
 
+use Freyr\RPA\Basket\DomainModel\Commands\AddProductToBasket;
 use Freyr\RPA\Basket\DomainModel\Commands\CreateBasket;
 use Freyr\RPA\Basket\DomainModel\Commands\RemoveProductFromBasket;
+use Freyr\RPA\Basket\DomainModel\Events\BasketWasCreated;
 use Freyr\RPA\Basket\DomainModel\Events\ProductWasAddedToBasket;
 use Freyr\RPA\Basket\DomainModel\Events\ProductWasRemovedFromBasket;
 use Freyr\RPA\Basket\ReadModel\ProductService;
@@ -23,7 +25,7 @@ class Basket extends AggregateRoot
     public static function create(CreateBasket $command): Basket
     {
         $self = new Basket();
-        $self->recordThat(ProductWasRemovedFromBasket::occur($command->getAggregateId()->toString(), []));
+        $self->recordThat(BasketWasCreated::occur($command->getAggregateId()->toString(), []));
         return $self;
     }
 
@@ -37,7 +39,7 @@ class Basket extends AggregateRoot
         }
     }
 
-    public function addProductToBasket(CreateBasket $command, ProductService $productService): void
+    public function addProductToBasket(AddProductToBasket $command, ProductService $productService): void
     {
         $product = $productService->getProduct(new ProductId($command->getProductId()));
         $productId = $command->getProductId()->toString();
@@ -72,6 +74,7 @@ class Basket extends AggregateRoot
         $handler = match ($class) {
             ProductWasRemovedFromBasket::class => fn(ProductWasRemovedFromBasket $event) => $this->onProductWasRemovedFromBasket($event),
             ProductWasAddedToBasket::class => fn(ProductWasAddedToBasket $event) => $this->onProductWasAddedToBasket($event),
+            BasketWasCreated::class => fn(BasketWasCreated $event) => $this->onBasketWasCreated($event),
         };
 
         $handler($event);
@@ -93,5 +96,10 @@ class Basket extends AggregateRoot
         } else {
             $this->products[$productId] = ['price' => $price, 'amount' => $amount];
         }
+    }
+
+    private function onBasketWasCreated(BasketWasCreated $event)
+    {
+        $this->id = $event->field('_uuid');
     }
 }
