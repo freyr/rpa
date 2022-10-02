@@ -20,6 +20,7 @@ https://leanpub.com/ddd-in-php
 * https://martinfowler.com/bliki/BoundedContext.html
 * https://www.culttt.com/2014/11/26/strategies-integrating-bounded-contexts
 * https://herbertograca.com/2016/06/13/ddd-16-large-scale-structure/
+* https://en.wikipedia.org/wiki/Liskov_substitution_principle
 
 ### Videos
 * https://www.youtube.com/c/MariuszGil
