@@ -9,7 +9,7 @@ use Freyr\RPA\BoundedContext\DomainModel\ReservationDateRange;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
-class Command
+class BookParkingSpaceCommand
 {
 
     private ReservationDateRange $dateRange;
